@@ -64,7 +64,8 @@ void main() {
     });
 
     test('should assert if values length is not 20', () {
-      expect(() => ColorMatrix.filled(values: [1.0]), throwsA(isA<AssertionError>()));
+      expect(() => ColorMatrix.filled(values: [1.0]),
+          throwsA(isA<AssertionError>()));
     });
   });
 }
