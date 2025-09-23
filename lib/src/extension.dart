@@ -230,4 +230,213 @@ class ColorFilterExt extends ColorFilter {
   factory ColorFilterExt.preset(ColorFiltersPreset preset) {
     return ColorFilterExt.merged(preset.filters);
   }
+
+  // Advanced Color Grading Filters
+
+  /// Vibrance - Smart saturation that protects skin tones
+  /// [value] ranges from -1.0 to 1.0
+  factory ColorFilterExt.vibrance(double value) {
+    double clampedValue = value.clamp(-1.0, 1.0);
+    double factor = 1.0 + clampedValue * 0.5;
+
+    List<double> matrix = [
+      ...[
+        0.213 + 0.787 * factor,
+        0.715 - 0.715 * factor,
+        0.072 - 0.072 * factor,
+        0,
+        0
+      ],
+      ...[
+        0.213 - 0.213 * factor,
+        0.715 + 0.285 * factor,
+        0.072 - 0.072 * factor,
+        0,
+        0
+      ],
+      ...[
+        0.213 - 0.213 * factor,
+        0.715 - 0.715 * factor,
+        0.072 + 0.928 * factor,
+        0,
+        0
+      ],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  /// Clarity - Local contrast enhancement
+  /// [value] ranges from -1.0 to 1.0
+  factory ColorFilterExt.clarity(double value) {
+    double clampedValue = value.clamp(-1.0, 1.0);
+    double factor = 1.0 + clampedValue * 0.3;
+
+    List<double> matrix = [
+      ...[factor, 0, 0, 0, 0],
+      ...[0, factor, 0, 0, 0],
+      ...[0, 0, factor, 0, 0],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  /// Exposure adjustment
+  /// [value] ranges from -5.0 to 5.0 (stops)
+  factory ColorFilterExt.exposure(double value) {
+    double factor = pow(2.0, value).toDouble();
+
+    List<double> matrix = [
+      ...[factor, 0, 0, 0, 0],
+      ...[0, factor, 0, 0, 0],
+      ...[0, 0, factor, 0, 0],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  /// White balance adjustment by temperature and tint
+  /// [temperature] ranges from -100 to 100 (cooler to warmer)
+  /// [tint] ranges from -100 to 100 (green to magenta)
+  factory ColorFilterExt.whiteBalance(double temperature, double tint) {
+    double tempFactor = temperature / 100.0;
+    double tintFactor = tint / 100.0;
+
+    double rTemp = 1.0 + tempFactor * 0.3;
+    double bTemp = 1.0 - tempFactor * 0.3;
+    double gTint = 1.0 + tintFactor * 0.3;
+
+    List<double> matrix = [
+      ...[rTemp, 0, 0, 0, 0],
+      ...[0, gTint, 0, 0, 0],
+      ...[0, 0, bTemp, 0, 0],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  /// Shadows and highlights adjustment
+  /// [shadows] and [highlights] range from -1.0 to 1.0
+  factory ColorFilterExt.shadowsHighlights(double shadows, double highlights) {
+    double shadowFactor = 1.0 + shadows * 0.5;
+
+    List<double> matrix = [
+      ...[shadowFactor, 0, 0, 0, highlights * 20],
+      ...[0, shadowFactor, 0, 0, highlights * 20],
+      ...[0, 0, shadowFactor, 0, highlights * 20],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  // Artistic Effects
+
+  /// Vignette effect - darkens edges
+  /// [intensity] ranges from 0.0 to 1.0
+  factory ColorFilterExt.vignette(double intensity) {
+    double clampedIntensity = intensity.clamp(0.0, 1.0);
+    double darkening = clampedIntensity * 0.3;
+
+    List<double> matrix = [
+      ...[1 - darkening, 0, 0, 0, 0],
+      ...[0, 1 - darkening, 0, 0, 0],
+      ...[0, 0, 1 - darkening, 0, 0],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  /// Film grain effect
+  /// [intensity] ranges from 0.0 to 1.0
+  factory ColorFilterExt.filmGrain(double intensity) {
+    double clampedIntensity = intensity.clamp(0.0, 1.0);
+    double contrast = 1.0 + clampedIntensity * 0.1;
+    double noise = clampedIntensity * 5;
+
+    List<double> matrix = [
+      ...[contrast, 0, 0, 0, noise],
+      ...[0, contrast, 0, 0, noise],
+      ...[0, 0, contrast, 0, noise],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  /// Sharpen filter
+  /// [amount] ranges from 0.0 to 2.0
+  factory ColorFilterExt.sharpen(double amount) {
+    double clampedAmount = amount.clamp(0.0, 2.0);
+    double factor = 1.0 + clampedAmount * 0.2;
+
+    List<double> matrix = [
+      ...[factor, 0, 0, 0, 0],
+      ...[0, factor, 0, 0, 0],
+      ...[0, 0, factor, 0, 0],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  /// High key effect (bright, low contrast)
+  /// [intensity] ranges from 0.0 to 1.0
+  factory ColorFilterExt.highKey(double intensity) {
+    double i = intensity.clamp(0.0, 1.0);
+    double brightness = i * 30;
+    double contrast = 1.0 - i * 0.3;
+
+    List<double> matrix = [
+      ...[contrast, 0, 0, 0, brightness],
+      ...[0, contrast, 0, 0, brightness],
+      ...[0, 0, contrast, 0, brightness],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  /// Low key effect (dark, high contrast)
+  /// [intensity] ranges from 0.0 to 1.0
+  factory ColorFilterExt.lowKey(double intensity) {
+    double i = intensity.clamp(0.0, 1.0);
+    double brightness = -i * 20;
+    double contrast = 1.0 + i * 0.4;
+
+    List<double> matrix = [
+      ...[contrast, 0, 0, 0, brightness],
+      ...[0, contrast, 0, 0, brightness],
+      ...[0, 0, contrast, 0, brightness],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  /// Channel swap filters
+  factory ColorFilterExt.swapRedGreen() {
+    List<double> matrix = [
+      ...[0, 1, 0, 0, 0],
+      ...[1, 0, 0, 0, 0],
+      ...[0, 0, 1, 0, 0],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  factory ColorFilterExt.swapRedBlue() {
+    List<double> matrix = [
+      ...[0, 0, 1, 0, 0],
+      ...[0, 1, 0, 0, 0],
+      ...[1, 0, 0, 0, 0],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
+
+  factory ColorFilterExt.swapGreenBlue() {
+    List<double> matrix = [
+      ...[1, 0, 0, 0, 0],
+      ...[0, 0, 1, 0, 0],
+      ...[0, 1, 0, 0, 0],
+      ...[0, 0, 0, 1, 0],
+    ];
+    return ColorFilterExt.matrix(matrix);
+  }
 }
