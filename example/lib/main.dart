@@ -44,7 +44,7 @@ class _FilterPageState extends State<FilterPage> {
               children: [
                 Expanded(
                   child: ColorFiltered(
-                    colorFilter: ColorFilterExt.preset(preset),
+                    colorFilter: ColorFilterExt.preset(preset).colorFilter,
                     child: Image.asset(
                       'assets/sample.jpg',
                       fit: BoxFit.cover,
