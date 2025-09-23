@@ -7,7 +7,8 @@
       "Bash(gh issue view:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(dart format:*)"
     ],
     "deny": [],
     "ask": []

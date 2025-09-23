@@ -380,7 +380,8 @@ void main() {
     });
 
     test('preset list count should include new presets', () {
-      expect(presetFiltersList.length, greaterThan(80)); // Should have 90+ presets now
+      expect(presetFiltersList.length,
+          greaterThan(80)); // Should have 90+ presets now
     });
   });
 }

@@ -458,19 +458,23 @@ class ColorFilterExt extends ColorFilter {
       lr + cosA * (1 - lr) + sinA * (-lr),
       lg + cosA * (-lg) + sinA * (-lg),
       lb + cosA * (-lb) + sinA * (1 - lb),
-      0, 0,
-
+      0,
+      0,
       lr + cosA * (-lr) + sinA * (0.143),
       lg + cosA * (1 - lg) + sinA * (0.140),
       lb + cosA * (-lb) + sinA * (-0.283),
-      0, 0,
-
+      0,
+      0,
       lr + cosA * (-lr) + sinA * (-(1 - lr)),
       lg + cosA * (-lg) + sinA * (lg),
       lb + cosA * (1 - lb) + sinA * (lb),
-      0, 0,
-
-      0, 0, 0, 1, 0
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -534,10 +538,26 @@ class ColorFilterExt extends ColorFilter {
     double magentaAdjust = 1.0 - clampedValue * 0.15;
 
     List<double> matrix = [
-      magentaAdjust, 0, 0, 0, 0,
-      0, greenAdjust, 0, 0, 0,
-      0, 0, magentaAdjust, 0, 0,
-      0, 0, 0, 1, 0
+      magentaAdjust,
+      0,
+      0,
+      0,
+      0,
+      0,
+      greenAdjust,
+      0,
+      0,
+      0,
+      0,
+      0,
+      magentaAdjust,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -547,26 +567,58 @@ class ColorFilterExt extends ColorFilter {
   factory ColorFilterExt.duotone(Color shadowColor, Color highlightColor) {
     // First convert to grayscale
     List<double> grayscaleMatrix = [
-      0.2126, 0.7152, 0.0722, 0, 0,
-      0.2126, 0.7152, 0.0722, 0, 0,
-      0.2126, 0.7152, 0.0722, 0, 0,
-      0, 0, 0, 1, 0
+      0.2126,
+      0.7152,
+      0.0722,
+      0,
+      0,
+      0.2126,
+      0.7152,
+      0.0722,
+      0,
+      0,
+      0.2126,
+      0.7152,
+      0.0722,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     // Then map grayscale to color gradient
-    double sr = shadowColor.red / 255.0;
-    double sg = shadowColor.green / 255.0;
-    double sb = shadowColor.blue / 255.0;
+    double sr = (shadowColor.r * 255.0).round() / 255.0;
+    double sg = (shadowColor.g * 255.0).round() / 255.0;
+    double sb = (shadowColor.b * 255.0).round() / 255.0;
 
-    double hr = highlightColor.red / 255.0;
-    double hg = highlightColor.green / 255.0;
-    double hb = highlightColor.blue / 255.0;
+    double hr = (highlightColor.r * 255.0).round() / 255.0;
+    double hg = (highlightColor.g * 255.0).round() / 255.0;
+    double hb = (highlightColor.b * 255.0).round() / 255.0;
 
     List<double> colorMatrix = [
-      (hr - sr), 0, 0, 0, sr * 255,
-      (hg - sg), 0, 0, 0, sg * 255,
-      (hb - sb), 0, 0, 0, sb * 255,
-      0, 0, 0, 1, 0
+      (hr - sr),
+      0,
+      0,
+      0,
+      sr * 255,
+      (hg - sg),
+      0,
+      0,
+      0,
+      sg * 255,
+      (hb - sb),
+      0,
+      0,
+      0,
+      sb * 255,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     // Merge the matrices
@@ -579,14 +631,29 @@ class ColorFilterExt extends ColorFilter {
   /// [levels] number of levels per channel (2-256)
   factory ColorFilterExt.posterize(int levels) {
     levels = levels.clamp(2, 256);
-    double factor = 255.0 / (levels - 1);
     double scale = (levels - 1) / 255.0;
 
     List<double> matrix = [
-      scale, 0, 0, 0, 0,
-      0, scale, 0, 0, 0,
-      0, 0, scale, 0, 0,
-      0, 0, 0, 1, 0
+      scale,
+      0,
+      0,
+      0,
+      0,
+      0,
+      scale,
+      0,
+      0,
+      0,
+      0,
+      0,
+      scale,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -606,10 +673,26 @@ class ColorFilterExt extends ColorFilter {
     double offset = -threshold * contrast + 128;
 
     List<double> contrastMatrix = [
-      contrast, 0, 0, 0, offset,
-      contrast, 0, 0, 0, offset,
-      contrast, 0, 0, 0, offset,
-      0, 0, 0, 1, 0
+      contrast,
+      0,
+      0,
+      0,
+      offset,
+      contrast,
+      0,
+      0,
+      0,
+      offset,
+      contrast,
+      0,
+      0,
+      0,
+      offset,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     var thresholdFilter = ColorFilterExt.matrix(contrastMatrix);
@@ -627,10 +710,26 @@ class ColorFilterExt extends ColorFilter {
     double brightness = point * 2;
 
     List<double> matrix = [
-      contrast, 0, 0, 0, brightness,
-      0, contrast, 0, 0, brightness,
-      0, 0, contrast, 0, brightness,
-      0, 0, 0, 1, 0
+      contrast,
+      0,
+      0,
+      0,
+      brightness,
+      0,
+      contrast,
+      0,
+      0,
+      brightness,
+      0,
+      0,
+      contrast,
+      0,
+      brightness,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -643,10 +742,6 @@ class ColorFilterExt extends ColorFilter {
   factory ColorFilterExt.dehaze(double amount) {
     amount = amount.clamp(0.0, 1.0);
 
-    // Dehaze increases contrast and saturation
-    double contrast = 1.0 + amount * 0.3;
-    double saturation = 1.0 + amount * 0.2;
-
     // Combine contrast and saturation
     var contrastFilter = ColorFilterExt.contrast(amount * 0.3);
     var saturationFilter = ColorFilterExt.saturation(amount * 0.2);
@@ -658,26 +753,43 @@ class ColorFilterExt extends ColorFilter {
   /// [shadowColor] color for darker areas
   /// [highlightColor] color for brighter areas
   /// [balance] balance between shadows and highlights (-1.0 to 1.0)
-  factory ColorFilterExt.splitTone(Color shadowColor, Color highlightColor, double balance) {
+  factory ColorFilterExt.splitTone(
+      Color shadowColor, Color highlightColor, double balance) {
     balance = balance.clamp(-1.0, 1.0);
 
     // Normalize balance to 0-1 range
     double shadowWeight = (1.0 - balance) * 0.5;
     double highlightWeight = (1.0 + balance) * 0.5;
 
-    double sr = shadowColor.red / 255.0 * shadowWeight;
-    double sg = shadowColor.green / 255.0 * shadowWeight;
-    double sb = shadowColor.blue / 255.0 * shadowWeight;
+    double sr = (shadowColor.r * 255.0).round() / 255.0 * shadowWeight;
+    double sg = (shadowColor.g * 255.0).round() / 255.0 * shadowWeight;
+    double sb = (shadowColor.b * 255.0).round() / 255.0 * shadowWeight;
 
-    double hr = highlightColor.red / 255.0 * highlightWeight;
-    double hg = highlightColor.green / 255.0 * highlightWeight;
-    double hb = highlightColor.blue / 255.0 * highlightWeight;
+    double hr = (highlightColor.r * 255.0).round() / 255.0 * highlightWeight;
+    double hg = (highlightColor.g * 255.0).round() / 255.0 * highlightWeight;
+    double hb = (highlightColor.b * 255.0).round() / 255.0 * highlightWeight;
 
     List<double> matrix = [
-      1.0, 0, 0, 0, (sr + hr) * 25,
-      0, 1.0, 0, 0, (sg + hg) * 25,
-      0, 0, 1.0, 0, (sb + hb) * 25,
-      0, 0, 0, 1, 0
+      1.0,
+      0,
+      0,
+      0,
+      (sr + hr) * 25,
+      0,
+      1.0,
+      0,
+      0,
+      (sg + hg) * 25,
+      0,
+      0,
+      1.0,
+      0,
+      (sb + hb) * 25,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -687,10 +799,26 @@ class ColorFilterExt extends ColorFilter {
   factory ColorFilterExt.crossProcess() {
     // Typical cross-processing color shifts
     List<double> matrix = [
-      1.1, 0.1, -0.1, 0, 10,
-      0.05, 1.05, 0.05, 0, -5,
-      -0.05, 0.1, 1.2, 0, -10,
-      0, 0, 0, 1, 0
+      1.1,
+      0.1,
+      -0.1,
+      0,
+      10,
+      0.05,
+      1.05,
+      0.05,
+      0,
+      -5,
+      -0.05,
+      0.1,
+      1.2,
+      0,
+      -10,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -702,7 +830,6 @@ class ColorFilterExt extends ColorFilter {
     amount = amount.clamp(0.0, 1.0);
 
     // Bleach bypass combines B&W with color
-    var grayscale = ColorFilterExt.grayscale();
     var contrast = ColorFilterExt.contrast(amount * 0.4);
     var desaturate = ColorFilterExt.saturation(-amount * 0.3);
 
@@ -713,10 +840,26 @@ class ColorFilterExt extends ColorFilter {
   factory ColorFilterExt.infrared() {
     // Swap red and blue channels, adjust brightness
     List<double> matrix = [
-      0.3, 0.3, 1.3, 0, 0,
-      0.3, 0.3, 0.3, 0, 0,
-      1.3, 0.3, 0.3, 0, 0,
-      0, 0, 0, 1, 0
+      0.3,
+      0.3,
+      1.3,
+      0,
+      0,
+      0.3,
+      0.3,
+      0.3,
+      0,
+      0,
+      1.3,
+      0.3,
+      0.3,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -726,10 +869,26 @@ class ColorFilterExt extends ColorFilter {
   factory ColorFilterExt.nightVision() {
     // Green monochrome with increased brightness
     List<double> matrix = [
-      0.1, 0.4, 0.1, 0, 0,
-      0.2, 0.8, 0.2, 0, 50,
-      0.1, 0.4, 0.1, 0, 0,
-      0, 0, 0, 1, 0
+      0.1,
+      0.4,
+      0.1,
+      0,
+      0,
+      0.2,
+      0.8,
+      0.2,
+      0,
+      50,
+      0.1,
+      0.4,
+      0.1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -739,10 +898,26 @@ class ColorFilterExt extends ColorFilter {
   factory ColorFilterExt.thermal() {
     // Red-orange-yellow thermal mapping
     List<double> matrix = [
-      0.8, 0.4, 0.2, 0, 50,
-      0.3, 0.3, 0.1, 0, 25,
-      0.1, 0.1, 0.1, 0, 0,
-      0, 0, 0, 1, 0
+      0.8,
+      0.4,
+      0.2,
+      0,
+      50,
+      0.3,
+      0.3,
+      0.1,
+      0,
+      25,
+      0.1,
+      0.1,
+      0.1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -760,7 +935,8 @@ class ColorFilterExt extends ColorFilter {
     var sepia = ColorFilterExt.sepia(fade * 0.3);
     var brightness = ColorFilterExt.brightness(fade * 0.1);
     var contrast = ColorFilterExt.contrast(-fade * 0.1);
-    var warm = ColorFilterExt.rgbScale(1.0 + warmth * 0.1, 1.0, 1.0 - warmth * 0.05);
+    var warm =
+        ColorFilterExt.rgbScale(1.0 + warmth * 0.1, 1.0, 1.0 - warmth * 0.05);
 
     return ColorFilterExt.merged([sepia, brightness, contrast, warm]);
   }
@@ -769,10 +945,26 @@ class ColorFilterExt extends ColorFilter {
   factory ColorFilterExt.retro() {
     // Magenta/cyan shift with high contrast
     List<double> matrix = [
-      1.2, 0.0, 0.2, 0, 10,
-      0.1, 1.0, 0.1, 0, 0,
-      0.2, 0.2, 1.1, 0, 20,
-      0, 0, 0, 1, 0
+      1.2,
+      0.0,
+      0.2,
+      0,
+      10,
+      0.1,
+      1.0,
+      0.1,
+      0,
+      0,
+      0.2,
+      0.2,
+      1.1,
+      0,
+      20,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -785,10 +977,26 @@ class ColorFilterExt extends ColorFilter {
     var saturation = ColorFilterExt.saturation(0.5);
 
     List<double> matrix = [
-      1.1, 0.0, 0.3, 0, 0,
-      0.0, 1.0, 0.3, 0, 15,
-      0.3, 0.0, 1.2, 0, 30,
-      0, 0, 0, 1, 0
+      1.1,
+      0.0,
+      0.3,
+      0,
+      0,
+      0.0,
+      1.0,
+      0.3,
+      0,
+      15,
+      0.3,
+      0.0,
+      1.2,
+      0,
+      30,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     var colorShift = ColorFilterExt.matrix(matrix);
@@ -825,10 +1033,26 @@ class ColorFilterExt extends ColorFilter {
 
     // Slight color shifts for pop art look
     List<double> matrix = [
-      1.1, 0.0, 0.0, 0, 10,
-      0.0, 1.1, 0.0, 0, -5,
-      0.0, 0.0, 1.2, 0, 15,
-      0, 0, 0, 1, 0
+      1.1,
+      0.0,
+      0.0,
+      0,
+      10,
+      0.0,
+      1.1,
+      0.0,
+      0,
+      -5,
+      0.0,
+      0.0,
+      1.2,
+      0,
+      15,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     var colorBoost = ColorFilterExt.matrix(matrix);
@@ -843,14 +1067,31 @@ class ColorFilterExt extends ColorFilter {
     var softContrast = ColorFilterExt.contrast(-0.05);
 
     List<double> matrix = [
-      1.0, 0.05, 0.0, 0, 15,
-      0.0, 1.0, 0.0, 0, 5,
-      0.0, 0.0, 0.9, 0, 0,
-      0, 0, 0, 1, 0
+      1.0,
+      0.05,
+      0.0,
+      0,
+      15,
+      0.0,
+      1.0,
+      0.0,
+      0,
+      5,
+      0.0,
+      0.0,
+      0.9,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     var goldenTint = ColorFilterExt.matrix(matrix);
-    return ColorFilterExt.merged([warmth, brightness, softContrast, goldenTint]);
+    return ColorFilterExt.merged(
+        [warmth, brightness, softContrast, goldenTint]);
   }
 
   /// Blue hour lighting effect
@@ -861,10 +1102,26 @@ class ColorFilterExt extends ColorFilter {
     var saturation = ColorFilterExt.saturation(0.1);
 
     List<double> matrix = [
-      0.9, 0.0, 0.1, 0, 0,
-      0.0, 0.95, 0.05, 0, 5,
-      0.05, 0.05, 1.1, 0, 25,
-      0, 0, 0, 1, 0
+      0.9,
+      0.0,
+      0.1,
+      0,
+      0,
+      0.0,
+      0.95,
+      0.05,
+      0,
+      5,
+      0.05,
+      0.05,
+      1.1,
+      0,
+      25,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     var blueTint = ColorFilterExt.matrix(matrix);
@@ -883,10 +1140,26 @@ class ColorFilterExt extends ColorFilter {
     double factor = pow(0.5, gamma) * 2.0; // Normalize around midpoint
 
     List<double> matrix = [
-      factor, 0, 0, 0, 0,
-      0, factor, 0, 0, 0,
-      0, 0, factor, 0, 0,
-      0, 0, 0, 1, 0
+      factor,
+      0,
+      0,
+      0,
+      0,
+      0,
+      factor,
+      0,
+      0,
+      0,
+      0,
+      0,
+      factor,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);
@@ -896,7 +1169,8 @@ class ColorFilterExt extends ColorFilter {
   /// [blackPoint] input black point (0.0 to 1.0)
   /// [whitePoint] input white point (0.0 to 1.0)
   /// [midtones] midtone adjustment (0.1 to 9.9, 1.0 = no change)
-  factory ColorFilterExt.levels(double blackPoint, double whitePoint, double midtones) {
+  factory ColorFilterExt.levels(
+      double blackPoint, double whitePoint, double midtones) {
     blackPoint = blackPoint.clamp(0.0, 1.0);
     whitePoint = whitePoint.clamp(0.0, 1.0);
     midtones = midtones.clamp(0.1, 9.9);
@@ -912,10 +1186,26 @@ class ColorFilterExt extends ColorFilter {
     double gammaFactor = pow(0.5, gamma) * 2.0;
 
     List<double> matrix = [
-      scale * gammaFactor, 0, 0, 0, offset * 255,
-      0, scale * gammaFactor, 0, 0, offset * 255,
-      0, 0, scale * gammaFactor, 0, offset * 255,
-      0, 0, 0, 1, 0
+      scale * gammaFactor,
+      0,
+      0,
+      0,
+      offset * 255,
+      0,
+      scale * gammaFactor,
+      0,
+      0,
+      offset * 255,
+      0,
+      0,
+      scale * gammaFactor,
+      0,
+      offset * 255,
+      0,
+      0,
+      0,
+      1,
+      0
     ];
 
     return ColorFilterExt.matrix(matrix);

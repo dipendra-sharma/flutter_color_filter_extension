@@ -24,7 +24,8 @@ class _FilterPageState extends State<FilterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Color Filter Extension (${presetFiltersList.length} presets)'),
+        title: Text(
+            'Color Filter Extension (${presetFiltersList.length} presets)'),
         centerTitle: true,
       ),
       body: GridView.builder(
