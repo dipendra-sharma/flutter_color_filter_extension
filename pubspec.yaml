@@ -1,7 +1,7 @@
 name: color_filter_extension
 
-description: "Flutter image magic! ColorFilter lets you adjust brightness, contrast, & apply presets with ease. Perfect for app design, artistic effects, & photo processing"
-version: 0.1.0
+description: "Comprehensive Flutter color filter library with 30+ professional filters & 90+ presets. Includes film emulation, cinema looks, artistic effects, and technical adjustments."
+version: 1.0.0
 homepage: https://github.com/dipendra-sharma/flutter_color_filter_extension
 
 environment:
