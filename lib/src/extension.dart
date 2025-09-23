@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'matrix.dart';
 
-class ColorFilterExt extends ColorFilter {
+class ColorFilterExt {
   // | R' |   | a00 a01 a02 a03 a04 |   | R |
   // | G' |   | a10 a11 a22 a33 a44 |   | G |
   // | B' | = | a20 a21 a22 a33 a44 | * | B |
@@ -16,7 +16,9 @@ class ColorFilterExt extends ColorFilter {
 
   ColorMatrix get colorMatrix => ColorMatrix.filled(values: matrix);
 
-  const ColorFilterExt.matrix(this.matrix) : super.matrix(matrix);
+  ColorFilterExt._internal(this.matrix);
+
+  ColorFilter get colorFilter => ColorFilter.matrix(matrix);
 
   // ColorFilterExt.mode(Color color, BlendMode blendMode,
   //     {this.matrix = emptyMatrix})
@@ -36,7 +38,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, (1 - scale), 0, blue * scale],
       ...[0, 0, 0, 1, 0]
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.rgbScale(double r, double g, double b) {
@@ -46,7 +48,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, b, 0, 0],
       ...[0, 0, 0, 1, 0]
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.addictiveColor(double r, double g, double b) {
@@ -56,7 +58,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, 1, 0, b],
       ...[0, 0, 0, 1, 0]
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.grayscale() {
@@ -66,7 +68,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0.2126, 0.7152, 0.0722, 0, 0],
       ...[0, 0, 0, 1, 0]
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.sepia(double value) {
@@ -76,7 +78,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0.272 * value, 0.534 * value, (1 - (0.869 * value)), 0, 0],
       ...[0, 0, 0, 1, 0]
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.invert() {
@@ -86,7 +88,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, -1, 0, 255],
       ...[0, 0, 0, 1, 0]
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.contrast(double value) {
@@ -98,7 +100,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, factor, 0, 128 * (1 - factor)],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.brightness(double value) {
@@ -119,7 +121,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, 1, 0, value],
       ...[0, 0, 0, 1, 0]
     ]).map((i) => i.toDouble()).toList();
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.hue(double value) {
@@ -160,7 +162,7 @@ class ColorFilterExt extends ColorFilter {
       ],
       ...[0, 0, 0, 1, 0],
     ]).map((i) => i.toDouble()).toList();
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.saturation(double value) {
@@ -182,7 +184,7 @@ class ColorFilterExt extends ColorFilter {
       ...[lumR * (1 - x), lumG * (1 - x), (lumB * (1 - x)) + x, 0, 0],
       ...[0, 0, 0, 1, 0],
     ]).map((i) => i.toDouble()).toList();
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.temperature(double value) {
@@ -192,7 +194,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, 1, 0, -128 * value],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   // Need to test
@@ -203,7 +205,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, pow(255, 1 - 1 / gamma).toDouble(), 0, 0],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.opacity(double opacity) {
@@ -213,18 +215,18 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, 1, 0, 0],
       ...[0, 0, 0, opacity, 0], // Adjust alpha channel
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.merged(List<ColorFilterExt> colorFilters) {
     if (colorFilters.isEmpty) {
-      return ColorFilterExt.matrix(ColorMatrix.empty().values);
+      return ColorFilterExt._internal(ColorMatrix.empty().values);
     }
     ColorMatrix outputColorMatrix = colorFilters
         .map((filter) => filter.colorMatrix)
         .reduce((result, matrix) => result.merge(matrix));
     List<double> matrix = outputColorMatrix.values;
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.preset(ColorFiltersPreset preset) {
@@ -263,7 +265,7 @@ class ColorFilterExt extends ColorFilter {
       ],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Clarity - Local contrast enhancement
@@ -278,7 +280,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, factor, 0, 0],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Exposure adjustment
@@ -292,7 +294,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, factor, 0, 0],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// White balance adjustment by temperature and tint
@@ -312,7 +314,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, bTemp, 0, 0],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Shadows and highlights adjustment
@@ -326,7 +328,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, shadowFactor, 0, highlights * 20],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   // Artistic Effects
@@ -343,7 +345,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, 1 - darkening, 0, 0],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Film grain effect
@@ -359,7 +361,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, contrast, 0, noise],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Sharpen filter
@@ -374,7 +376,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, factor, 0, 0],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// High key effect (bright, low contrast)
@@ -390,7 +392,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, contrast, 0, brightness],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Low key effect (dark, high contrast)
@@ -406,7 +408,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, contrast, 0, brightness],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Channel swap filters
@@ -417,7 +419,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 0, 1, 0, 0],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.swapRedBlue() {
@@ -427,7 +429,7 @@ class ColorFilterExt extends ColorFilter {
       ...[1, 0, 0, 0, 0],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   factory ColorFilterExt.swapGreenBlue() {
@@ -437,7 +439,7 @@ class ColorFilterExt extends ColorFilter {
       ...[0, 1, 0, 0, 0],
       ...[0, 0, 0, 1, 0],
     ];
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   // =================== COLOR SCIENCE FILTERS ===================
@@ -477,7 +479,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Color temperature adjustment (Kelvin scale)
@@ -560,7 +562,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Duotone effect - map grayscale to two colors
@@ -622,8 +624,8 @@ class ColorFilterExt extends ColorFilter {
     ];
 
     // Merge the matrices
-    var grayscale = ColorFilterExt.matrix(grayscaleMatrix);
-    var colorMap = ColorFilterExt.matrix(colorMatrix);
+    var grayscale = ColorFilterExt._internal(grayscaleMatrix);
+    var colorMap = ColorFilterExt._internal(colorMatrix);
     return ColorFilterExt.merged([grayscale, colorMap]);
   }
 
@@ -656,7 +658,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Threshold - convert to high contrast black/white
@@ -695,7 +697,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    var thresholdFilter = ColorFilterExt.matrix(contrastMatrix);
+    var thresholdFilter = ColorFilterExt._internal(contrastMatrix);
     return ColorFilterExt.merged([grayscale, thresholdFilter]);
   }
 
@@ -732,7 +734,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   // =================== PROFESSIONAL PHOTO FILTERS ===================
@@ -792,7 +794,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Cross processing - film development effect
@@ -821,7 +823,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Bleach bypass - silver retention effect
@@ -862,7 +864,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Night vision effect
@@ -891,7 +893,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Thermal camera effect
@@ -920,7 +922,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   // =================== ARTISTIC FILTERS ===================
@@ -967,7 +969,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Cyberpunk neon effect
@@ -999,7 +1001,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    var colorShift = ColorFilterExt.matrix(matrix);
+    var colorShift = ColorFilterExt._internal(matrix);
     return ColorFilterExt.merged([contrast, saturation, colorShift]);
   }
 
@@ -1055,7 +1057,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    var colorBoost = ColorFilterExt.matrix(matrix);
+    var colorBoost = ColorFilterExt._internal(matrix);
     return ColorFilterExt.merged([saturation, contrast, colorBoost]);
   }
 
@@ -1089,7 +1091,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    var goldenTint = ColorFilterExt.matrix(matrix);
+    var goldenTint = ColorFilterExt._internal(matrix);
     return ColorFilterExt.merged(
         [warmth, brightness, softContrast, goldenTint]);
   }
@@ -1124,7 +1126,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    var blueTint = ColorFilterExt.matrix(matrix);
+    var blueTint = ColorFilterExt._internal(matrix);
     return ColorFilterExt.merged([coolness, brightness, saturation, blueTint]);
   }
 
@@ -1162,7 +1164,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Levels adjustment
@@ -1208,7 +1210,7 @@ class ColorFilterExt extends ColorFilter {
       0
     ];
 
-    return ColorFilterExt.matrix(matrix);
+    return ColorFilterExt._internal(matrix);
   }
 
   /// Normalize - auto contrast by stretching histogram

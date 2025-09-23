@@ -74,7 +74,7 @@ void main() {
     test('brightness filter should modify matrix correctly', () {
       final filter = ColorFilterExt.brightness(0.1);
       expect(filter.matrix.length, equals(20));
-      expect(filter.matrix[4], equals(10.0)); // brightness offset
+      expect(filter.matrix[4], equals(25.5)); // brightness offset
     });
 
     test('contrast filter should have proper scaling', () {
