@@ -1,3 +1,10 @@
+## 1.0.1
+
+### 🔧 Example Update
+- **Example Project** - Recreated example project with fresh Flutter structure
+- **Sample Asset** - Added new sample image for better filter preview demonstration
+- **Clean Structure** - Improved example app organization and dependencies
+
 ## 1.0.0
 
 ### 🎉 Major Release - Complete Library Transformation
