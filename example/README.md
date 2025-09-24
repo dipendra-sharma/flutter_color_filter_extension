@@ -1,6 +1,6 @@
 # example
 
-Example Project for ColorFilterExtension
+A new Flutter project.
 
 ## Getting Started
 
